@@ -40,7 +40,13 @@ class Mesh2D:
 
     Examples
     --------
-    TBD
+    First mode, use the class constructor:
+
+    >>> # Create a mesh with a single element given by the unit square
+    >>> import numpy as np
+    >>> from vempy.mesh import Mesh2D
+    >>> coords = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+    >>> mesh = Mesh2D(xy=coords, regn_vrtx=[[0,1,2,3]])
     """
 
     __UNSET = -1  # Arbitrary constant to unset class variables
@@ -729,8 +735,8 @@ class Mesh2D:
         elist = np.concatenate([np.stack((vlist, np.roll(vlist, -1)), axis=-1)
                                 for vlist in regn_vrtx])
         sorted_elist = np.sort(elist)
-        _, rind, rinv = \
-            np.unique(sorted_elist, return_index=True, return_inverse=True)
+        _, rind, rinv = np.unique(sorted_elist, return_index=True,
+                                  return_inverse=True, axis=0)
         self._face_vrtx = elist[rind, :]
         ties = np.cumsum([len(ar) for ar in regn_vrtx])[:-1]
         self._regn_face = [ar.tolist() for ar in np.split(rinv, ties)]
@@ -870,10 +876,12 @@ class Mesh2D:
         self._nR = len(self._regn_face)
 
         # Build bottom -> top connectivity (vertex-to-face and face-to-region)
-        self._vrtx_face = self._invert_int_mapping(self._face_vrtx)
+        self._vrtx_face = self._invert_int_mapping(self._face_vrtx, self._nV)
         self._face_regn = \
-            np.array([row if len(row) == 2 else [row[0], Mesh2D.__UNSET]
-                      for row in self._invert_int_mapping(self._regn_face)])
+            np.array([
+                row if len(row) == 2 else [row[0], Mesh2D.__UNSET]
+                for row in self._invert_int_mapping(self._regn_face, self._nF)
+            ])
 
         # Build flags
         if fV is not None:
