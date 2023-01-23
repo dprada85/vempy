@@ -55,16 +55,10 @@ class Mesh2D:
                  regn_vrtx=None,
                  face_vrtx=None, face_regn=None,
                  regn_face=None,
-                 fV=None, fF=None, fR=None):
+                 fV=None, fF=None, fR=None,
+                 name=None):
 
-        self._name = ""  # Name of the mesh
-
-        # External flags
-        self._fV = np.array([])
-        self._fF = np.array([])
-        self._fR = np.array([])
-
-        # _build_the_mesh takes care of building all the remaining attributes
+        # _build_the_mesh takes care of building all the following attributes
         #
         # self._nV, number of vertices
         # self._nF, number of edges
@@ -74,6 +68,9 @@ class Mesh2D:
         # self._face_vrtx, face to vertex connectivity
         # self._vrtx_face, vertex to face connectivity
         # self._face_regn, face to region connectivity
+        # self._fV, vertex flags
+        # self._fF, face flags
+        # self._fR, region flags
         # self._bnd_vrtx, boundary vertices
         # self._bnd_face, boundary faces
         # self._bnd_regn, boundary regions
@@ -82,6 +79,35 @@ class Mesh2D:
                              face_vrtx=face_vrtx, face_regn=face_regn,
                              regn_face=regn_face,
                              fV=fV, fF=fF, fR=fR)
+
+        if name is not None:
+            self.name = name
+        else:
+            self._name = ""
+
+    def __str__(self):
+        """String representation."""
+        Mesh2D_str = """
+Mesh2D:
+
+Number of vertices: {nV}
+Number of faces: {nF}
+Number of regions: {nR}
+
+Vertex coordinates:
+{xy}
+
+Face-to-vertex connectivity:
+{face_vrtx}
+
+Face-to-region connectivity:
+{face_regn}
+
+Name: {name}
+        """.format(nV=self._nV, nF=self._nF, nR=self._nR, xy=self._vrtx_coords,
+                   face_vrtx=self._face_vrtx, face_regn=self._face_regn,
+                   name=self._name)
+        return Mesh2D_str
 
     @property
     def nV(self):
@@ -886,10 +912,16 @@ class Mesh2D:
         # Build flags
         if fV is not None:
             self.fV = fV
+        else:
+            self._fV = np.array([])
         if fF is not None:
             self.fF = fF
+        else:
+            self._fF = np.array([])
         if fR is not None:
             self.fR = fR
+        else:
+            self._fR = np.array([])
 
         # Build boundary sets
         self._build_boundary_sets()
