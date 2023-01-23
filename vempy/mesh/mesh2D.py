@@ -47,6 +47,34 @@ class Mesh2D:
     >>> from vempy.mesh import Mesh2D
     >>> coords = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
     >>> mesh = Mesh2D(xy=coords, regn_vrtx=[[0,1,2,3]])
+    >>> print(mesh)
+
+    Mesh2D:
+
+    Number of vertices: 4
+    Number of faces: 4
+    Number of regions: 1
+
+    Vertex coordinates:
+    [[0. 0.]
+     [1. 0.]
+     [1. 1.]
+     [0. 1.]]
+
+    Face-to-vertex connectivity:
+    [[0 1]
+     [3 0]
+     [1 2]
+     [2 3]]
+
+    Face-to-region connectivity:
+    [[ 0 -1]
+     [ 0 -1]
+     [ 0 -1]
+     [ 0 -1]]
+
+    Name:
+
     """
 
     __UNSET = -1  # Arbitrary constant to unset class variables
@@ -108,6 +136,23 @@ Name: {name}
                    face_vrtx=self._face_vrtx, face_regn=self._face_regn,
                    name=self._name)
         return Mesh2D_str
+
+    def __eq__(self, other):
+        """Custom comparison."""
+        return (self._nV == other._nV) and (self._nF == other._nF) and \
+            (self._nR == other._nR) and \
+            np.all(self._vrtx_coords == other._vrtx_coords) and \
+            (self._regn_face == other._regn_face) and \
+            np.all(self._face_vrtx == other._face_vrtx) and \
+            (self._vrtx_face == other._vrtx_face) and \
+            np.all(self._face_regn == other._face_regn) and \
+            np.all(self._fV == other._fV) and \
+            np.all(self._fF == other._fF) and \
+            np.all(self._fR == other._fR) and \
+            (self._bnd_vrtx == other._bnd_vrtx) and \
+            (self._bnd_face == other._bnd_face) and \
+            (self._bnd_regn == other._bnd_regn) and \
+            (self._name == other._name)
 
     @property
     def nV(self):
