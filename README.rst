@@ -6,9 +6,6 @@ vempy
 .. image:: https://img.shields.io/pypi/v/vempy.svg
         :target: https://pypi.python.org/pypi/vempy
 
-.. image:: https://img.shields.io/travis/dprada85/vempy.svg
-        :target: https://travis-ci.com/dprada85/vempy
-
 .. image:: https://readthedocs.org/projects/vempy/badge/?version=latest
         :target: https://vempy.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
