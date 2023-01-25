@@ -139,20 +139,20 @@ Name: {name}
 
     def __eq__(self, other):
         """Custom comparison."""
-        return (self._nV == other._nV) and (self._nF == other._nF) and \
-            (self._nR == other._nR) and \
-            np.all(self._vrtx_coords == other._vrtx_coords) and \
+        return (self.nV == other.nV) and (self.nF == other.nF) and \
+            (self.nR == other.nR) and \
+            np.all(self.vrtx_coords == other.vrtx_coords) and \
             (self._regn_face == other._regn_face) and \
             np.all(self._face_vrtx == other._face_vrtx) and \
             (self._vrtx_face == other._vrtx_face) and \
             np.all(self._face_regn == other._face_regn) and \
-            np.all(self._fV == other._fV) and \
-            np.all(self._fF == other._fF) and \
-            np.all(self._fR == other._fR) and \
-            (self._bnd_vrtx == other._bnd_vrtx) and \
-            (self._bnd_face == other._bnd_face) and \
-            (self._bnd_regn == other._bnd_regn) and \
-            (self._name == other._name)
+            np.all(self.fV == other.fV) and \
+            np.all(self.fF == other.fF) and \
+            np.all(self.fR == other.fR) and \
+            (self.bnd_vrtx == other.bnd_vrtx) and \
+            (self.bnd_face == other.bnd_face) and \
+            (self.bnd_regn == other.bnd_regn) and \
+            (self.name == other.name)
 
     @property
     def nV(self):
