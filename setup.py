@@ -25,7 +25,6 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
     ],
     description="A Python package for solving partial differential equations by the Virtual Element Method.",
     install_requires=requirements,
