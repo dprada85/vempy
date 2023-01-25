@@ -194,7 +194,13 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> import numpy as np
+        >>> from vempy.mesh import Mesh2D
+        >>> coords = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        >>> mesh = Mesh2D(xy=coords, regn_vrtx=[[0,1,2,3]])
+        >>> mesh.name = "Mesh 1"
+        >>> print(mesh.name)
+        Mesh 1
         """
         if type(new_name) is not str:
             raise ValueError("Mesh name must be a string")
@@ -244,7 +250,10 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.bbox())
+        (0.0, 0.0, 1.0, 1.0)
         """
         bbox = tuple(np.amin(self._vrtx_coords, axis=0).tolist() +
                      np.amax(self._vrtx_coords, axis=0).tolist())
@@ -266,7 +275,12 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = np.array([[-0.2, -0.1], [0.2, -0.1], [0.2, 0.1], [-0.5, 0.1]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.face_measure())
+        [0.4        0.36055513 0.2        0.7       ]
+        >>> print(mesh.face_measure(2))
+        0.2
         """
         if iF is None:
             delta = self._vrtx_coords[self._face_vrtx[:, 0], :] - \
@@ -293,7 +307,11 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = numpy.array([[-0.25, -0.25], [0.25, -0.25],
+                              [0.25, 0.25], [-0.25, 0.25]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.face_nor(0))
+        [0. -1.]
         """
         iV0 = self._face_vrtx[iF, 0]
         iV1 = self._face_vrtx[iF, 1]
@@ -318,7 +336,11 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = numpy.array([[-0.25, -0.25], [0.25, -0.25],
+                              [0.25, 0.25], [-0.25, 0.25]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.face_tng(0))
+        [1. 0.]
         """
         iV0 = self._face_vrtx[iF, 0]
         iV1 = self._face_vrtx[iF, 1]
@@ -343,7 +365,11 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = numpy.array([[-0.25, -0.25], [0.25, -0.25],
+                              [0.25, 0.25], [-0.25, 0.25]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.regn_area(0))
+        0.25
         """
         regn_area = \
             self._lasserre(lambda iF: self.face_measure(iF), 0, iR)
@@ -364,7 +390,10 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 0.5], [0.0, 0.5]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.regn_centroid(0))
+        (0.5, 0.25)
         """
         regn_area = self.regn_area(iR)
         xr = \
@@ -391,7 +420,10 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = np.array([[0.0, 0.0], [4.0, 0.0], [4.0, 1.0], [0.0, 1.0]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.hmin())
+        1.0
         """
         hmin = np.amin(self.face_measure())
         return hmin
@@ -409,7 +441,10 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = np.array([[0.0, 0.0], [4.0, 0.0], [4.0, 1.0], [0.0, 1.0]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.hmax())
+        4.123105625617661
         """
         diameters = [np.amax(pdist(self._vrtx_coords[self.regn_vrtx(iR), :]))
                      for iR in range(self._nR)]
@@ -430,7 +465,10 @@ Name: {name}
 
         Examples
         --------
-        TBD
+        >>> xy = np.array([[0.0, 0.0], [4.0, 0.0], [4.0, 1.0], [0.0, 1.0]])
+        >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        >>> print(mesh.hsqr())
+        (2.0, 2.0)
         """
         areas_sq = np.sqrt([self.regn_area(iR) for iR in range(self._nR)])
         hsqrt = (np.amax(areas_sq), np.mean(areas_sq))
@@ -502,7 +540,7 @@ Name: {name}
         TBD
         """
         iF = self._regn_face[iR][ilF]
-        out = iF == self._face_regn[iR, 0]
+        out = iR == self._face_regn[iF, 0]
         return out
 
     def regn_vrtx(self, iR):
@@ -523,7 +561,7 @@ Name: {name}
         TBD
         """
         regn_vrtx = \
-            tuple(self._face_vrtx[iF, 0] if iF == self._face_regn[iR, 0] else
+            tuple(self._face_vrtx[iF, 0] if iR == self._face_regn[iF, 0] else
                   self._face_vrtx[iF, 1] for iF in self._regn_face[iR])
         return regn_vrtx
 
@@ -607,7 +645,7 @@ Name: {name}
         TBD
         """
         redundant_regions = self._face_regn[self._vrtx_face[iV], :].flatten()
-        vrtx_regn = tuple(set(redundant_regions).discard(Mesh2D.__UNSET))
+        vrtx_regn = tuple(set(redundant_regions).difference({Mesh2D.__UNSET}))
         return vrtx_regn
 
     def vrtx_face(self, iV):
@@ -648,7 +686,7 @@ Name: {name}
         TBD
         """
         redundant_vertices = self._face_vrtx[self._vrtx_face[iV], :].flatten()
-        vrtx_vrtx = tuple(set(redundant_vertices).discard(iV))
+        vrtx_vrtx = tuple(set(redundant_vertices).difference(iV))
         return vrtx_vrtx
 
     @property
@@ -782,10 +820,10 @@ Name: {name}
            Comput Mech 56, 967–981 (2015).
         """
         lasserre = \
-            ((2.0 * (iF == self._face_regn[iR, 0]) - 1.0) *
+            [(2.0 * (iR == self._face_regn[iF, 0]) - 1.0) *
              np.dot(self.face_nor(iF),
                     self._vrtx_coords[self._face_vrtx[iF, 0], :]) *
-             func(iF) for iF in self._regn_face[iR])
+             func(iF) for iF in self._regn_face[iR]]
         result = 1.0 / (2.0 + np.float64(deg)) * sum(lasserre)
         return result
 
