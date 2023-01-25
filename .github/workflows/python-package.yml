@@ -44,5 +44,4 @@ jobs:
         # Options are `alpine`, `linux`, `macos`, `windows`
         curl -Os https://uploader.codecov.io/latest/linux/codecov
         chmod +x codecov
-	CODECOV_TOKEN=7f042dfb-9572-4ea4-915c-cc4ef8320ea3
         ./codecov -t ${CODECOV_TOKEN}
