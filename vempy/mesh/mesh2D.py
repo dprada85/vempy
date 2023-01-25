@@ -152,7 +152,8 @@ Name: {name}
             (self.bnd_vrtx == other.bnd_vrtx) and \
             (self.bnd_face == other.bnd_face) and \
             (self.bnd_regn == other.bnd_regn) and \
-            (self.name == other.name)
+            (self.name == other.name) and \
+            str(self) == str(other)
 
     @property
     def nV(self):
