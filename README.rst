@@ -10,7 +10,8 @@ vempy
         :target: https://vempy.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
-
+.. image:: https://codecov.io/github/dprada85/vempy/branch/master/graph/badge.svg?token=ZLF6HVVJV0
+        :target: https://codecov.io/github/dprada85/vempy
 
 
 A Python package for solving partial differential equations by the Virtual Element Method.
