@@ -37,7 +37,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest --cov=
+        pytest --cov=vempy tests
     - name: Upload coverage reports to Codecov
       run: |
         # Replace `linux` below with the appropriate OS
