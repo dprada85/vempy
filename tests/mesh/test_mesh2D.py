@@ -30,7 +30,7 @@ class TestMesh2D(object):
     def test_name_setter(self):
         """Test the setter method of the name attribute."""
         xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
-        mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], name="Default name")
         with pytest.raises(ValueError):
             mesh.name = []
         with pytest.raises(ValueError):

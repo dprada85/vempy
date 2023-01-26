@@ -115,6 +115,56 @@ class Mesh2D:
 
     def __str__(self):
         """String representation."""
+        vrtx_coords_str = \
+            "\n".join(
+                [str(iV) + " " + str(self._vrtx_coords[iV, :]).strip("[]")
+                 for iV in range(self._nV)]
+            )
+        regn_regn_str = \
+            "\n".join(
+                [str(iR) + " " + " ".join([str(r) for r in self.regn_regn(iR)])
+                 for iR in range(self._nR)]
+            )
+        regn_face_str = \
+            "\n".join(
+                [str(iR) + " " + " ".join([str(r) for r in self.regn_face(iR)])
+                 for iR in range(self._nR)]
+            )
+        regn_vrtx_str = \
+            "\n".join(
+                [str(iR) + " " + " ".join([str(r) for r in self.regn_vrtx(iR)])
+                 for iR in range(self._nR)]
+            )
+        face_regn_str = \
+            "\n".join(
+                [str(iF) + " " + " ".join([str(r) for r in self.face_regn(iF)])
+                 for iF in range(self._nF)]
+            )
+        face_face_str = \
+            "\n".join(
+                [str(iF) + " " + " ".join([str(r) for r in self.face_face(iF)])
+                 for iF in range(self._nF)]
+            )
+        face_vrtx_str = \
+            "\n".join(
+                [str(iF) + " " + " ".join([str(r) for r in self.face_vrtx(iF)])
+                 for iF in range(self._nF)]
+            )
+        vrtx_regn_str = \
+            "\n".join(
+                [str(iV) + " " + " ".join([str(r) for r in self.vrtx_regn(iV)])
+                 for iV in range(self._nV)]
+            )
+        vrtx_face_str = \
+            "\n".join(
+                [str(iV) + " " + " ".join([str(r) for r in self.vrtx_face(iV)])
+                 for iV in range(self._nV)]
+            )
+        vrtx_vrtx_str = \
+            "\n".join(
+                [str(iV) + " " + " ".join([str(r) for r in self.vrtx_vrtx(iV)])
+                 for iV in range(self._nV)]
+            )
         Mesh2D_str = """
 Mesh2D:
 
@@ -125,16 +175,40 @@ Number of regions: {nR}
 Vertex coordinates:
 {xy}
 
-Face-to-vertex connectivity:
-{face_vrtx}
+Region-to-region:
+{regn_regn}
 
-Face-to-region connectivity:
+Region-to-face:
+{regn_face}
+
+Region-to-vertex:
+{regn_vrtx}
+
+Face-to-region:
 {face_regn}
 
+Face-to-face:
+{face_face}
+
+Face-to-vertex:
+{face_vrtx}
+
+Vertex-to-region:
+{vrtx_regn}
+
+Vertex-to-face:
+{vrtx_face}
+
+Vertex-to-vertex:
+{vrtx_vrtx}
+
 Name: {name}
-        """.format(nV=self._nV, nF=self._nF, nR=self._nR, xy=self._vrtx_coords,
-                   face_vrtx=self._face_vrtx, face_regn=self._face_regn,
-                   name=self._name)
+        """.format(nV=self._nV, nF=self._nF, nR=self._nR, xy=vrtx_coords_str,
+                   regn_regn=regn_regn_str, regn_face=regn_face_str,
+                   regn_vrtx=regn_vrtx_str, face_regn=face_regn_str,
+                   face_face=face_face_str, face_vrtx=face_vrtx_str,
+                   vrtx_regn=vrtx_regn_str, vrtx_face=vrtx_face_str,
+                   vrtx_vrtx=vrtx_vrtx_str, name=self._name)
         return Mesh2D_str
 
     def __eq__(self, other):
@@ -686,7 +760,7 @@ Name: {name}
         TBD
         """
         redundant_vertices = self._face_vrtx[self._vrtx_face[iV], :].flatten()
-        vrtx_vrtx = tuple(set(redundant_vertices).difference(iV))
+        vrtx_vrtx = tuple(set(redundant_vertices).difference({iV}))
         return vrtx_vrtx
 
     @property
