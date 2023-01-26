@@ -1060,11 +1060,22 @@ Name: {name}
 
         # Build bottom -> top connectivity (vertex-to-face and face-to-region)
         self._vrtx_face = self._invert_int_mapping(self._face_vrtx, self._nV)
-        self._face_regn = \
-            np.array([
-                row if len(row) == 2 else [row[0], Mesh2D.__UNSET]
-                for row in self._invert_int_mapping(self._regn_face, self._nF)
-            ])
+        self._face_regn = np.full((self._nF, 2), -1)
+        for iR, flist in enumerate(self._regn_face):
+            face0 = set(self._face_vrtx[flist[0], :])
+            face1 = set(self._face_vrtx[flist[1], :])
+            last_iV = face0.intersection(face1).pop()
+            if last_iV == self._face_vrtx[flist[0], 1]:
+                self._face_regn[flist[0], 0] = iR
+            else:
+                self._face_regn[flist[0], 1] = iR
+            for iF in flist[1:]:
+                if self._face_vrtx[iF, 0] == last_iV:
+                    self._face_regn[iF, 0] = iR
+                    last_iV = self._face_vrtx[iF, 1]
+                else:
+                    self._face_regn[iF, 1] = iR
+                    last_iV = self._face_vrtx[iF, 0]
 
         # Build flags
         if fV is not None:

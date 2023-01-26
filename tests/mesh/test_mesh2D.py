@@ -41,6 +41,17 @@ class TestMesh2D(object):
                    face_regn=np.array([[0, -1], [0, -1], [0, -1], [0, -1]]),
                    regn_face=[[0, 2, 3, 1]])
 
+    def test_orientation(self):
+        xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        mesh1 = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
+        mesh2 = \
+            Mesh2D(xy=xy,
+                   face_vrtx=np.array([[0, 1], [2, 1], [2, 3], [0, 3]]),
+                   face_regn=np.array([[0, -1], [-1, 0], [0, -1], [-1, 0]]))
+#        print(mesh2)
+#        print(mesh2._invert_int_mapping(mesh2._regn_face, mesh2._nF))
+        assert mesh1.regn_vrtx(0) == mesh2.regn_vrtx(0)
+
     def test_name_setter(self):
         """Test the setter method of the name attribute."""
         xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
