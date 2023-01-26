@@ -27,6 +27,20 @@ class TestMesh2D(object):
         assert msh1 == msh3, message2
         assert msh2 == msh3, message3
 
+    def test_missing_connectivity(self):
+        """Test whether any connectivity data is missing."""
+        xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        with pytest.raises(TypeError):
+            Mesh2D(xy=xy,
+                   face_vrtx=np.array([[0, 1], [3, 0], [1, 2], [2, 3]]))
+        with pytest.raises(TypeError):
+            Mesh2D(xy=xy,
+                   face_regn=np.array([[0, -1], [0, -1], [0, -1], [0, -1]]))
+        with pytest.raises(TypeError):
+            Mesh2D(xy=xy,
+                   face_regn=np.array([[0, -1], [0, -1], [0, -1], [0, -1]]),
+                   regn_face=[[0, 2, 3, 1]])
+
     def test_name_setter(self):
         """Test the setter method of the name attribute."""
         xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
