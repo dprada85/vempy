@@ -976,28 +976,27 @@ Name: {name}
         self._regn_face = \
             self._invert_int_mapping(face_regn, nR, unset=Mesh2D.__UNSET)
 
-        for iR in range(nR):
-            iF = self._regn_face[iR][0]
-            new_faces = [iF]
-            remaining_faces = self._regn_face[iR][1:]
+        for iR, flist in enumerate(self._regn_face):
+            iF = flist.pop(0)
+            new_flist = [iF]
             if iR == face_regn[iF, 0]:
                 last_iV = face_vrtx[iF, 1]
             else:
                 last_iV = face_vrtx[iF, 0]
-            while len(remaining_faces) > 0:
-                for iF in remaining_faces:
+            while len(flist) > 0:
+                for iF in flist:
                     if face_vrtx[iF, 0] == last_iV:
-                        new_faces.append(iF)
-                        remaining_faces.remove(iF)
+                        new_flist.append(iF)
+                        flist.remove(iF)
                         last_iV = face_vrtx[iF, 1]
                         break
                     if face_vrtx[iF, 1] == last_iV:
-                        new_faces.append(iF)
-                        remaining_faces.remove(iF)
+                        new_flist.append(iF)
+                        flist.remove(iF)
                         last_iV = face_vrtx[iF, 0]
                         break
 
-            self._regn_face[iR] = new_faces
+            self._regn_face[iR] = new_flist
 
     def _build_boundary_sets(self):
         """Build sets of boundary elements."""
