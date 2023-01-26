@@ -111,3 +111,54 @@ class TestMesh2D(object):
         assert mesh.hmin() == pytest.approx(0.5)
         assert mesh.hmax() == pytest.approx(np.sqrt(1.25))
         assert mesh.hsqr() == pytest.approx([np.sqrt(0.5), np.sqrt(0.5)])
+
+    def test_fV_setter_methods(self):
+        """Test the setter method of node flags."""
+        xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        with pytest.raises(ValueError):
+            new_fV = [0, 0, 0, 0]
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fV=new_fV)
+        with pytest.raises(IndexError):
+            new_fV = np.array([[0], [0], [0], [0]])
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fV=new_fV)
+        with pytest.raises(IndexError):
+            new_fV = np.zeros(3, dtype=int)
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fV=new_fV)
+        new_fV = np.zeros(4, dtype=int)
+        mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fV=new_fV)
+        new_fV[0] = 1
+        assert mesh.fV[0] != 1
+
+    def test_fF_setter_methods(self):
+        """Test the setter method of face flags."""
+        xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        with pytest.raises(ValueError):
+            new_fF = [0, 0, 0, 0]
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fF=new_fF)
+        with pytest.raises(IndexError):
+            new_fF = np.array([[0], [0], [0], [0]])
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fF=new_fF)
+        with pytest.raises(IndexError):
+            new_fF = np.zeros(3, dtype=int)
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fF=new_fF)
+        new_fF = np.zeros(4, dtype=int)
+        mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fF=new_fF)
+        new_fF[0] = 1
+        assert mesh.fF[0] != 1
+
+    def test_fR_setter_methods(self):
+        """Test the setter method of region flags."""
+        xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        with pytest.raises(ValueError):
+            new_fR = [0]
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fR=new_fR)
+        with pytest.raises(IndexError):
+            new_fR = np.array([[0]])
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fR=new_fR)
+        with pytest.raises(IndexError):
+            new_fR = np.zeros(3, dtype=int)
+            mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fR=new_fR)
+        new_fR = np.zeros(1, dtype=int)
+        mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]], fR=new_fR)
+        new_fR[0] = 1
+        assert mesh.fR[0] != 1
