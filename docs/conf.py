@@ -31,7 +31,7 @@ import vempy
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'numpydoc']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -77,6 +77,13 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# -- Options for numpydoc output -------------------------------------------
+
+numpydoc_use_plots = True
+
+numpydoc_xref_param_type = True
+
+numpydoc_validation_checks = {"all"}
 
 # -- Options for HTML output -------------------------------------------
 
