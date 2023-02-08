@@ -40,8 +40,6 @@ class Mesh2D:
 
     Examples
     --------
-    First mode, use the class constructor:
-
     >>> # Create a mesh with a single element given by the unit square
     >>> import numpy as np
     >>> from vempy.mesh import Mesh2D
@@ -56,22 +54,55 @@ class Mesh2D:
     Number of regions: 1
 
     Vertex coordinates:
-    [[0. 0.]
-     [1. 0.]
-     [1. 1.]
-     [0. 1.]]
+    0 0. 0.
+    1 1. 0.
+    2 1. 1.
+    3 0. 1.
 
-    Face-to-vertex connectivity:
-    [[0 1]
-     [3 0]
-     [1 2]
-     [2 3]]
+    Region-to-region:
+    0 -1 -1 -1 -1
 
-    Face-to-region connectivity:
-    [[ 0 -1]
-     [ 0 -1]
-     [ 0 -1]
-     [ 0 -1]]
+    Region-to-face:
+    0 0 2 3 1
+
+    Region-to-vertex:
+    0 0 1 2 3
+
+    Face-to-region:
+    0 0 -1
+    1 0 -1
+    2 0 -1
+    3 0 -1
+
+    Face-to-face:
+    0 1 2
+    1 0 3
+    2 0 3
+    3 1 2
+
+    Face-to-vertex:
+    0 0 1
+    1 3 0
+    2 1 2
+    3 2 3
+
+    Vertex-to-region:
+    0 0
+    1 0
+    2 0
+    3 0
+
+    Vertex-to-face:
+    0 0 1
+    1 0 2
+    2 2 3
+    3 1 3
+
+    Vertex-to-vertex:
+    0 1 3
+    1 0 2
+    2 1 3
+    3 0 2
 
     Name:
 
@@ -324,7 +355,7 @@ Name: {name}
 
         Examples
         --------
-        >>> xy = np.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
+        >>> xy = numpy.array([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]])
         >>> mesh = Mesh2D(xy=xy, regn_vrtx=[[0, 1, 2, 3]])
         >>> print(mesh.bbox())
         (0.0, 0.0, 1.0, 1.0)
@@ -1081,15 +1112,15 @@ Name: {name}
         if fV is not None:
             self.fV = fV
         else:
-            self._fV = np.array([])
+            self._fV = np.full(self.nV, fill_value=Mesh2D.__UNSET, dtype=int)
         if fF is not None:
             self.fF = fF
         else:
-            self._fF = np.array([])
+            self._fF = np.full(self.nF, fill_value=Mesh2D.__UNSET, dtype=int)
         if fR is not None:
             self.fR = fR
         else:
-            self._fR = np.array([])
+            self._fR = np.full(self.nR, fill_value=Mesh2D.__UNSET, dtype=int)
 
         # Build boundary sets
         self._build_boundary_sets()
