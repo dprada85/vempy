@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist
 
 
@@ -1124,3 +1125,261 @@ Name: {name}
 
         # Build boundary sets
         self._build_boundary_sets()
+
+    def draw_primal_mesh(self, ax, color, linestyle):
+        """Draw primal mesh, i.e., mesh regions.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which the primal mesh has to be added to.
+        color : str
+            Supported matplotlib color.
+        linestyle : str
+            Supported matplotlib line style.
+        """
+        for vertices in self._face_vrtx:
+            ax.plot(self._vrtx_coords[vertices, 0],
+                    self._vrtx_coords[vertices, 1],
+                    color=color, linestyle=linestyle)
+
+    def draw_median_dual_mesh(self, ax, color, linestyle):
+        """Draw median dual mesh, i.e., connect region centroids
+        with face centers.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which the median dual mesh has to be added to.
+        color : str
+            Supported matplotlib color.
+        linestyle : str
+            Supported matplotlib line style.
+        """
+        for iR in range(self._nR):
+            centroid = self.regn_centroid(iR)
+            for iF in self._regn_face[iR]:
+                fc = np.mean(self._vrtx_coords[self._face_vrtx[iF, :], :],
+                             axis=0)
+                ax.plot([centroid[0], fc[0]], [centroid[1], fc[1]],
+                        color=color, linestyle=linestyle)
+
+    def draw_center_dual_mesh(self, ax, color, linestyle):
+        """Draw center dual mesh, i.e., connect adjacent region centroids
+        and region centroids with boundary face centers.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which the center dual mesh has to be added to.
+        color : str
+            Supported matplotlib color.
+        linestyle : str
+            Supported matplotlib line style.
+        """
+        for iF in range(self._nF):
+            if self._face_regn[iF, 0] == Mesh2D.__UNSET:
+                iR = self._face_regn[iF, 1]
+                centroid = self.regn_centroid(iR)
+                fc = np.mean(self._vrtx_coords[self._face_vrtx[iF, :], :],
+                             axis=0)
+                ax.plot([centroid[0], fc[0]], [centroid[1], fc[1]],
+                        color=color, linestyle=linestyle)
+            else:
+                if self._face_regn[iF, 1] == Mesh2D.__UNSET:
+                    iR = self._face_regn[iF, 0]
+                    centroid = self.regn_centroid(iR)
+                    fc = np.mean(self._vrtx_coords[self._face_vrtx[iF, :], :],
+                                 axis=0)
+                    ax.plot([centroid[0], fc[0]], [centroid[1], fc[1]],
+                            color=color, linestyle=linestyle)
+                else:
+                    iR0 = self._face_regn[iF, 0]
+                    iR1 = self._face_regn[iF, 1]
+                    centroid0 = self.regn_centroid(iR0)
+                    centroid1 = self.regn_centroid(iR1)
+                    ax.plot([centroid0[0], centroid1[0]],
+                            [centroid0[1], centroid1[1]],
+                            color=color, linestyle=linestyle)
+
+    def draw_bbox(self, ax):
+        """Draw the mesh bounding box.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which the mesh bounding box should be added to.
+        """
+        bb = self.bbox()
+        ax.plot([bb[0], bb[2], bb[2], bb[0], bb[0]],
+                [bb[1], bb[1], bb[3], bb[3], bb[1]],
+                color="k", linestyle="-")
+
+    def draw_boundary(self, ax):
+        """Draw the mesh boundary.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which the mesh boundary should be added to.
+        """
+        for iF in self._bnd_face:
+            ax.plot(self._vrtx_coords[self._face_vrtx[iF, :], 0],
+                    self._vrtx_coords[self._face_vrtx[iF, :], 1],
+                    color="k", linestyle="-", marker=".")
+
+    def draw_filled_regions(self, ax, regn_to_fill):
+        """Plot filled regions.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which the mesh boundary should be added to.
+        regn_to_fill = list
+            List of regions to fill. (Default value = None)
+        """
+        for iR in regn_to_fill:
+            vlist = self.regn_vrtx(iR)
+            ax.fill(self._vrtx_coords[vlist, 0], self._vrtx_coords[vlist, 1],
+                    color="b", edgecolor="k")
+
+    def draw_vrtx_pos(self, ax, fontsize, offset):
+        """Add vertex indices to the Axes.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which vertex indices should be added to.
+        fontsize : float
+            Font size.
+        offset : int
+            Offset number.
+        """
+        for iV in range(self._nV):
+            ax.text(self._vrtx_coords[iV, 0], self._vrtx_coords[iV, 1],
+                    str(iV+offset), fontsize=fontsize,
+                    horizontalalignment="center", verticalalignment="center")
+
+    def draw_face_pos(self, ax, fontsize, offset):
+        """Add face indices to the Axes.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which face indices should be added to.
+        fontsize : float
+            Font size.
+        offset : int
+            Offset number.
+        """
+        for iF in range(self._nF):
+            fc = np.mean(self._vrtx_coords[self._face_vrtx[iF, :], :],
+                         axis=0)
+            ax.text(fc[0], fc[1], str(iF+offset), fontsize=fontsize,
+                    horizontalalignment="center", verticalalignment="center")
+
+    def draw_regn_pos(self, ax, fontsize, offset):
+        """Add region indices to the Axes.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.AxesSubplot
+            Axes which region indices should be added to.
+        fontsize : float
+            Font size.
+        offset : int
+            Offset number.
+        """
+        for iR in range(self._nR):
+            centroid = self.regn_centroid(iR)
+            ax.text(centroid[0], centroid[1],
+                    str(iR+offset), fontsize=fontsize,
+                    horizontalalignment="center", verticalalignment="center")
+
+    def plot(self,
+             primal=True, primal_color="b", primal_linestyle="-",
+             m_dual=False, m_dual_color="r", m_dual_linestyle="--",
+             c_dual=False, c_dual_color="g", c_dual_linestyle="-.",
+             bbox=False, boundary=False, regn_to_fill=None,
+             vrtx_pos=False, face_pos=False, regn_pos=False,
+             fontsize=12, offset=0):
+        """Make plots of Mesh2D.
+
+        Parameters
+        ----------
+        primal : bool
+            True to plot the primal mesh, False otherwise.
+            (Default value = True)
+        primal_color : str
+            Supported matplotlib color for the primal mesh.
+            (Default value = "b")
+        primal_linestyle : str
+            Supported matplotlib linestyle for the primal mesh.
+            (Default value = "-")
+        m_dual : bool
+            True to plot the median dual mesh, False otherwise.
+            (Default value = False)
+        m_dual_color : str
+            Supported matplotlib color for the median dual mesh.
+            (Default value = "r")
+        m_dual_linestyle : str
+            Supported matplotlib linestyle for the median dual mesh.
+            (Default value = "--"
+        c_dual : bool
+            True to plot the center dual mesh, False otherwise.
+            (Default value = False)
+        c_dual_color : str
+            Supported matplotlib color for the center dual mesh.
+            (Default value = "g")
+        c_dual_linestyle : str
+            Supported matplotlib linestyle for center dual mesh.
+            (Default value = "-."
+        bbox : bool
+            True to plot the mesh bounding box, False otherwise.
+            (Default value = False)
+        boundary : bool
+            True to plot the mesh boundary, False otherwise.
+            (Default value = False)
+        regn_to_fill : list
+            List of regions to fill. (Default value = None)
+        vrtx_pos : bool
+            True to draw vertex indices, False otherwise.
+            (Default value = False)
+        face_pos : bool
+            True to draw face indices, False otherwise.
+            (Default value = False)
+        regn_pos : bool
+            True to draw region indices, False otherwise.
+            (Default value = False)
+        fontsize : float
+            Font size.
+        offset : int
+            Offset number.
+
+        Returns
+        -------
+        """
+        fig, ax = plt.subplots()
+        if primal:
+            self.draw_primal_mesh(ax, color=primal_color,
+                                  linestyle=primal_linestyle)
+        if m_dual:
+            self.draw_median_dual_mesh(ax, color=m_dual_color,
+                                       linestyle=m_dual_linestyle)
+        if c_dual:
+            self.draw_center_dual_mesh(ax, color=c_dual_color,
+                                       linestyle=c_dual_linestyle)
+        if bbox:
+            self.draw_bbox(ax)
+        if boundary:
+            self.draw_boundary(ax)
+        if regn_to_fill is not None:
+            self.draw_filled_regions(ax, regn_to_fill=regn_to_fill)
+        if vrtx_pos:
+            self.draw_vrtx_pos(ax, fontsize=fontsize, offset=offset)
+        if face_pos:
+            self.draw_face_pos(ax, fontsize=fontsize, offset=offset)
+        if regn_pos:
+            self.draw_regn_pos(ax, fontsize=fontsize, offset=offset)
+        ax.set_aspect("equal")
+        return fig, ax
