@@ -108,7 +108,7 @@ def write_unit_square_durham_edges():
 
 
 class TestReaderEquivalence(object):
-    """A container for testing readers equivalence."""
+    """A class for testing readers equivalence."""
 
     def test_off_node_ele(self,
                           write_unit_square_off, write_unit_square_node_ele):
@@ -141,3 +141,67 @@ class TestReaderEquivalence(object):
         mesh3 = read_durham(durham_edges_path)
         assert mesh1 == mesh2
         assert mesh1 == mesh3
+
+
+class TestReaderExceptions(object):
+    """A class for testing exceptions raised by readers."""
+
+    def test_region_orientation(self, capsys):
+        """Test for region orientation in input file."""
+        off_path = "square.off"
+        with open(off_path, "w") as off_file:
+            off_file.write("OFF\n"
+                           "4 1 0\n"
+                           "0 0 0\n"
+                           "1 0 0\n"
+                           "1 1 0\n"
+                           "0 1 0\n"
+                           "4 0 3 2 1\n")
+        read_off(off_path)
+        captured = capsys.readouterr()
+        assert captured.out.endswith("switching its orientation\n")
+        os.remove(off_path)
+
+    def test_nattr(self):
+        """Test for the correct number of region attribute in .ele file."""
+        nodele_path = "square"
+        with open(nodele_path + ".node", "w") as node_file:
+            node_file.write("3 2 0 0\n"
+                            "0 0.0 0.0\n"
+                            "1 1.0 0.0\n"
+                            "2 1.0 1.0\n")
+        with open(nodele_path + ".ele", "w") as ele_file:
+            ele_file.write("1 3 2\n0 0 1 2 -1 -1\n")
+        with pytest.raises(ValueError):
+            read_node_ele(nodele_path)
+        os.remove(nodele_path + ".node")
+        os.remove(nodele_path + ".ele")
+
+    def test_off_header(self):
+        """Check header of .off file"""
+        off_path = "square.off"
+        with open(off_path, "w") as off_file:
+            off_file.write("OF\n")
+        with pytest.raises(TypeError):
+            read_off(off_path)
+        os.remove(off_path)
+
+    def test_node_file(self):
+        """Check .node file."""
+        nodele_path = "square"
+        with open(nodele_path + ".node", "w") as node_file:
+            node_file.write("3 3 0 0\n"
+                            "0 0.0 0.0\n"
+                            "1 1.0 0.0\n"
+                            "2 1.0 1.0\n")
+        with pytest.raises(ValueError):
+            read_node_ele(nodele_path)
+        os.remove(nodele_path + ".node")
+        with open(nodele_path + ".node", "w") as node_file:
+            node_file.write("3 2 0 0\n"
+                            "0 0.0 0.0\n"
+                            "1 1.0 0.0\n")
+        with pytest.raises(IndexError) as exception_info:
+            read_node_ele(nodele_path)
+        assert exception_info.match("Expected 3 vertices, got 2, instead")
+        os.remove(nodele_path + ".node")

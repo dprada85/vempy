@@ -184,9 +184,6 @@ def read_off(filename, offset=0, unset=-1):
         nV, nR, _ = np.int64(file.readline().split())
         # Read vertex coordinates
         vrtx_coords = np.loadtxt(file, usecols=[0, 1], max_rows=nV)
-        if vrtx_coords.shape[0] != nV:
-            msg = 'Expected {} vertices, got {}, instead'
-            raise IndexError(msg.format(nV, vrtx_coords.shape[0]))
         # Read region-to-vertex connectivity
         regn_vrtx, fR = \
             _read_regn_data(file, vrtx_coords, nR, 0, 0, False, offset, unset)
