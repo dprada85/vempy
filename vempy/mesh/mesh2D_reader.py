@@ -370,7 +370,8 @@ def read_ff(filename, unset=-1):
                 nF = int(file.readline().split()[0])
                 data = np.loadtxt(file, max_rows=nF, dtype=int)
                 face_vrtx = data[:, 1:3]-offset
-                face_regn = data[:, 3:5]-offset
+                face_regn = np.where(data[:, 3:5] != -1,
+                                     data[:, 3:5]-offset, -1)
                 n_sections += 1
     fV = np.full(nV, fill_value=unset, dtype=int)
     fF = np.full(nF, fill_value=unset, dtype=int)
@@ -439,7 +440,8 @@ def read_durham(filename, unset=-1):
                 nF = int(line.split()[-1])
                 data = np.loadtxt(file, max_rows=nF, dtype=int)
                 face_vrtx = data[:, :2]-offset
-                face_regn = data[:, 2:]-offset
+                face_regn = np.where(data[:, 2:] != -1,
+                                     data[:, 2:]-offset, -1)
                 fF = np.full(nF, fill_value=unset, dtype=int)
                 n_sections += 1
             elif line.startswith('CELL_POINTS'):
